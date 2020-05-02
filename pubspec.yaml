@@ -42,10 +42,14 @@ dependencies:
   shared_preferences: ^0.5.3+4
   # https://github.com/xuelongqy/flutter_easyrefresh
   flutter_easyrefresh: ^2.0.0
+  #lanuage
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  intl_translation: ^0.17.2
 
 
 # For information on the generic Dart part of this file, see the
@@ -100,3 +104,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+flutter_intl:
+  enabled: true

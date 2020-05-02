@@ -15,8 +15,10 @@ import 'package:plpidb/res/colors.dart';
 import 'package:plpidb/res/strings.dart';
 import 'package:plpidb/util/favoriteProvide.dart';
 import 'package:plpidb/util/themeProvide.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'common/api.dart';
+import 'generated/l10n.dart';
 import 'http/httpUtil.dart';
 
 void main() async {
@@ -28,6 +30,7 @@ void main() async {
     var theme = ThemeProvide();
     var favorite = FavoriteProvide();
     var providers = Providers();
+
     //将theme,favorite加到providers中
     providers
         ..provide(Provider.function((context) => theme))
@@ -58,7 +61,28 @@ class MyApp extends StatelessWidget {
         return Provide<ThemeProvide>(
             builder: (context, child, theme) {
                 return MaterialApp(
-                    title: YStrings.appName,
+                    // ignore: missing_return
+                    localeResolutionCallback: (deviceLocale, supportedLocales) {
+                        print('deviceLocale: $deviceLocale');
+                    },
+                    localizationsDelegates: [
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                        const AppLocalizationDelegate(),
+                        S.delegate,
+                    ],
+                    supportedLocales: [
+                        const Locale('en','US'),
+                        const Locale.fromSubtags(languageCode: 'zh'), // generic Chinese 'zh'
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), // generic simplified Chinese 'zh_Hans'
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), // generic traditional Chinese 'zh_Hant'
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'), // 'zh_Hans_CN'
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'), // 'zh_Hant_TW'
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'HK'), // 'zh_Hant_HK'
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'MO'), // 'zh_Hant_MO'
+                    ],
+                    title: YStrings.appName + "3",
                     theme: ThemeData(
                         // This is the theme of your application.
                         //除了primaryColor，还有brightness、iconTheme、textTheme等等可以设置
@@ -76,7 +100,7 @@ class MyApp extends StatelessWidget {
 //              accentColor: YColors.colorAccent,
 //              dividerColor: YColors.dividerColor,
                     ),
-                    home: MyHomePage(title: YStrings.appName),
+                    home: MyHomePage(title: YStrings.appName + "2"),
                 );
             },
         );
@@ -109,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                title: Text(title),
+                title: Text(S.of(context).title),
                 actions: <Widget>[
                     IconButton(
                         icon: Icon(Icons.search),
@@ -135,19 +159,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                         icon: Icon(Icons.home),
-                        title: Text(YStrings.home),
+                        title: Text(S.of(context).home),
                     ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.filter_list),
-                        title: Text(YStrings.tree),
+                        title: Text(S.of(context).tree),
                     ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.low_priority),
-                        title: Text(YStrings.navi),
+                        title: Text(S.of(context).navi),
                     ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.apps),
-                        title: Text(YStrings.project),
+                        title: Text(S.of(context).project),
                     ),
                 ],
                 //当前选中下标
@@ -181,16 +205,16 @@ class _MyHomePageState extends State<MyHomePage> {
             //根据下标修改标题
             switch (index) {
                 case 0:
-                    title = YStrings.appName;
+                    title = S.of(context).appName;
                     break;
                 case 1:
-                    title = YStrings.tree;
+                    title = S.of(context).tree;
                     break;
                 case 2:
-                    title = YStrings.navi;
+                    title = S.of(context).navi;
                     break;
                 case 3:
-                    title = YStrings.project;
+                    title = S.of(context).project;
                     break;
             }
         });
@@ -252,7 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 })
                         ],
                         accountName: Text(
-                            YStrings.proName,
+                            S.of(context).proName,
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                         ),
                         accountEmail: Text(YStrings.github),
@@ -287,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         onTap: () {
                             Navigator.of(context).pop();
                             Share.share(
-                                '【玩安卓Flutter版】\nhttps://github.com/yechaoa/plpidb');
+                                '【' + S.of(context).appName + '】\nhttp://www.plpidb.com');
                         },
                     ),
                     ListTile(
