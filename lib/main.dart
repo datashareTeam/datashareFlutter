@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provide/provide.dart';
 import 'package:share/share.dart';
@@ -12,11 +13,13 @@ import 'package:plpidb/pages/projectPage.dart';
 import 'package:plpidb/pages/searchPage.dart';
 import 'package:plpidb/pages/treePage.dart';
 import 'package:plpidb/res/colors.dart';
+import 'package:plpidb/res/language.dart';
 import 'package:plpidb/res/strings.dart';
 import 'package:plpidb/util/favoriteProvide.dart';
 import 'package:plpidb/util/themeProvide.dart';
 
 import 'common/api.dart';
+import 'generated/i18n.dart';
 import 'http/httpUtil.dart';
 
 void main() async {
@@ -34,10 +37,11 @@ void main() async {
         ..provide(Provider.function((context) => favorite));
 
     int themeIndex = await getTheme();
+    int languageIndex = await getLanguage();
 
     runApp(ProviderNode(
         providers: providers,
-        child: MyApp(themeIndex),
+        child: MyApp(themeIndex, languageIndex),
     ));
 }
 
@@ -47,35 +51,56 @@ Future<int> getTheme() async {
     return null == themeIndex ? 0 : themeIndex;
 }
 
+Future<int> getLanguage() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int languageIndex = sp.getInt("languageIndex");
+    return null == languageIndex ? 0 : languageIndex;
+}
+
 class MyApp extends StatelessWidget {
     // This widget is the root of your application.
     final int themeIndex;
+    final int languageIndex;
 
-    MyApp(this.themeIndex);
+    MyApp(this.themeIndex, this.languageIndex);
 
     @override
     Widget build(BuildContext context) {
         return Provide<ThemeProvide>(
             builder: (context, child, theme) {
                 return MaterialApp(
+                    onGenerateTitle: (BuildContext context) => S.of(context).app_name,
+                    localizationsDelegates: const [
+                        S.delegate,
+                        //如果你在使用 material library，需要添加下面两个delegate
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                    ],
+                    supportedLocales: S.delegate.supportedLocales,
                     title: YStrings.appName,
+                    localeResolutionCallback: (deviceLocale, supportedLocales) {
+                        print('deviceLocale: $deviceLocale');
+                    },
                     theme: ThemeData(
                         // This is the theme of your application.
                         //除了primaryColor，还有brightness、iconTheme、textTheme等等可以设置
-                        primaryColor: YColors.themeColor[theme.value != null
-                            ? theme.value
+                        primaryColor: YColors.themeColor[theme.theme != null
+                            ? theme.theme
                             : themeIndex]["primaryColor"],
-                        primaryColorDark: YColors.themeColor[theme.value != null
-                            ? theme.value
+                        primaryColorDark: YColors.themeColor[theme.theme != null
+                            ? theme.theme
                             : themeIndex]["primaryColorDark"],
                         accentColor: YColors.themeColor[
-                        theme.value != null ? theme.value : themeIndex]["colorAccent"]
+                        theme.theme != null ? theme.theme : themeIndex]["colorAccent"]
 
 //              primaryColor: YColors.colorPrimary,
 //              primaryColorDark: YColors.colorPrimaryDark,
 //              accentColor: YColors.colorAccent,
 //              dividerColor: YColors.dividerColor,
                     ),
+                    locale: theme.language != null ?
+                    Locale(YLanguage.languageMap[theme.language]["languageCode"], YLanguage.languageMap[theme.language]["countryCode"]) :
+                    Locale(YLanguage.languageMap[languageIndex]["languageCode"], YLanguage.languageMap[languageIndex]["countryCode"]) ,
                     home: MyHomePage(title: YStrings.appName),
                 );
             },
@@ -109,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                title: Text(title),
+                title: Text(S.of(context).app_test),
                 actions: <Widget>[
                     IconButton(
                         icon: Icon(Icons.search),
@@ -281,13 +306,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                     ),
                     ListTile(
+                        leading: Icon(Icons.language),
+                        title: Text("切换语言"),
+                        trailing: Icon(Icons.chevron_right),
+                        onTap: () {
+                            Navigator.of(context).pop();
+                            showLanguageDialog();
+                        },
+                    ),
+                    ListTile(
                         leading: Icon(Icons.share),
                         title: Text("我要分享"),
                         trailing: Icon(Icons.chevron_right),
                         onTap: () {
                             Navigator.of(context).pop();
                             Share.share(
-                                '【玩安卓Flutter版】\nhttps://github.com/yechaoa/plpidb');
+                                '【PLPIDB】\nhttp://www.plpidb.com');
                         },
                     ),
                     ListTile(
@@ -384,6 +418,57 @@ class _MyHomePageState extends State<MyHomePage> {
                                             SharedPreferences sp =
                                             await SharedPreferences.getInstance();
                                             sp.setInt("themeIndex", position);
+                                            Navigator.of(context).pop();
+                                        },
+                                    );
+                                },
+                            ),
+                        ),
+                    ),
+                    actions: <Widget>[
+                        FlatButton(
+                            child: Text('关闭',
+                                style: TextStyle(color: Theme.of(context).primaryColor)),
+                            onPressed: () {
+                                Navigator.of(context).pop();
+                            },
+                        ),
+                    ],
+                );
+            },
+        );
+    }
+
+    void showLanguageDialog() {
+        showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+                return AlertDialog(
+                    title: Text('切换语言'),
+                    content: SingleChildScrollView(
+                        child: Container(
+                            //包含ListView要指定宽高
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: YLanguage.languageMap.keys.length,
+                                itemBuilder: (BuildContext context, int position) {
+                                    return GestureDetector(
+                                        child: Container(
+                                            padding: EdgeInsets.all(20.0),
+                                            margin: EdgeInsets.only(bottom: 15),
+                                            color: YColors.themeColor[position]["primaryColor"],
+                                            child: Text(YLanguage.languageMap[position]["code"]),
+                                        ),
+                                        onTap: () async {
+                                            Provide.value<ThemeProvide>(context).setLanguage(position);
+                                            //存储主题下标
+                                            print("------------" + position.toString() + YLanguage.languageMap[position]["code"]);
+                                            SharedPreferences sp =
+                                            await SharedPreferences.getInstance();
+                                            sp.setInt("languageIndex", position);
                                             Navigator.of(context).pop();
                                         },
                                     );

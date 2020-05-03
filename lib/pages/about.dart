@@ -55,7 +55,7 @@ class AboutPage extends StatelessWidget {
                     case "1":
                       //需要重启，不然会有 MissingPluginException(No implementation found for method getAll on channel plugins.flutter.io/share)异常
                       Share.share(
-                          '【玩安卓Flutter版】\nhttps://github.com/yechaoa/wanandroid_flutter');
+                          '【PLPIDB】\nhttp://www.pplpidb.com');
                       break;
                     case "2":
                       YToast.show(context: context, msg: "设置");

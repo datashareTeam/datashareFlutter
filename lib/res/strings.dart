@@ -1,7 +1,7 @@
 class YStrings{
   static String appName="葡语国家投资环境数据库";
   static String proName="PLPIDB";
-  static String github="https://github.com/yechaoa/wanandroid_flutter";
+  static String github="http://www.plpidb.com";
 
   static String home="首页";
   static String tree="数据中心";

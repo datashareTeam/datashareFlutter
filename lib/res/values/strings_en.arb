@@ -1,0 +1,17 @@
+{
+  "app_name": "",
+  "app_test": "app_test",
+  "app_information": "information",
+  "app_auto": "app_auto",
+  "app_en": "en",
+  "app_cn": "cn",
+  "app_mo": "cn_mo",
+  "appName": "PLPIDB",
+  "proName": "PLPIDB",
+  "github": "http://www.plpidb.com",
+
+  "home": "Home",
+  "tree": "Data",
+  "navi": "Learn",
+  "project": "Team"
+}
