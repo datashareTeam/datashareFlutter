@@ -1,11 +1,4 @@
 {
-  "app_name": "葡语国家投资数据库",
-  "app_test": "App调试",
-  "app_information": "资讯",
-  "app_auto" : "跟随系统",
-  "app_en": "英文",
-  "app_cn": "简体中文",
-  "app_mo": "繁体中文",
   "appName": "葡语国家投资环境数据库",
   "proName": "PLPIDB",
   "github": "http://www.plpidb.com",

@@ -54,14 +54,14 @@ Future<int> getTheme() async {
 Future<int> getLanguage() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     int languageIndex = sp.getInt("languageIndex");
-    return null == languageIndex ? 0 : languageIndex;
+    return null == languageIndex ? -1 : languageIndex;
 }
 
 class MyApp extends StatelessWidget {
     // This widget is the root of your application.
     final int themeIndex;
     final int languageIndex;
-
+    Locale locale;
     MyApp(this.themeIndex, this.languageIndex);
 
     @override
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
         return Provide<ThemeProvide>(
             builder: (context, child, theme) {
                 return MaterialApp(
-                    onGenerateTitle: (BuildContext context) => S.of(context).app_name,
+                    onGenerateTitle: (BuildContext context) => S.of(context).appName,
                     localizationsDelegates: const [
                         S.delegate,
                         //如果你在使用 material library，需要添加下面两个delegate
@@ -79,7 +79,9 @@ class MyApp extends StatelessWidget {
                     supportedLocales: S.delegate.supportedLocales,
                     title: YStrings.appName,
                     localeResolutionCallback: (deviceLocale, supportedLocales) {
-                        print('deviceLocale: $deviceLocale');
+                        YLanguage.setLanguage(deviceLocale.toString());
+                        print('--deviceLocale: ' + YLanguage.language);
+                        locale = deviceLocale;
                     },
                     theme: ThemeData(
                         // This is the theme of your application.
@@ -98,9 +100,9 @@ class MyApp extends StatelessWidget {
 //              accentColor: YColors.colorAccent,
 //              dividerColor: YColors.dividerColor,
                     ),
-                    locale: theme.language != null ?
-                    Locale(YLanguage.languageMap[theme.language]["languageCode"], YLanguage.languageMap[theme.language]["countryCode"]) :
-                    Locale(YLanguage.languageMap[languageIndex]["languageCode"], YLanguage.languageMap[languageIndex]["countryCode"]) ,
+                    //locale: YLanguage.getLanguageMap()[theme.language != null ? theme.language: languageIndex]["locale"],
+                    locale: theme.language != null ? YLanguage.getLanguageMap()[theme.language]["locale"] :
+                        -1 == languageIndex ? locale : YLanguage.getLanguageMap()[languageIndex]["locale"],
                     home: MyHomePage(title: YStrings.appName),
                 );
             },
@@ -134,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                title: Text(S.of(context).app_test),
+                title: Text(S.of(context).appName),
                 actions: <Widget>[
                     IconButton(
                         icon: Icon(Icons.search),
@@ -160,19 +162,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 items: <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                         icon: Icon(Icons.home),
-                        title: Text(YStrings.home),
+                        title: Text(S.of(context).home),
                     ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.filter_list),
-                        title: Text(YStrings.tree),
+                        title: Text(S.of(context).tree),
                     ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.low_priority),
-                        title: Text(YStrings.navi),
+                        title: Text(S.of(context).navi),
                     ),
                     BottomNavigationBarItem(
                         icon: Icon(Icons.apps),
-                        title: Text(YStrings.project),
+                        title: Text(S.of(context).project),
                     ),
                 ],
                 //当前选中下标
@@ -206,16 +208,16 @@ class _MyHomePageState extends State<MyHomePage> {
             //根据下标修改标题
             switch (index) {
                 case 0:
-                    title = YStrings.appName;
+                    title = S.of(context).appName;
                     break;
                 case 1:
-                    title = YStrings.tree;
+                    title = S.of(context).tree;
                     break;
                 case 2:
-                    title = YStrings.navi;
+                    title = S.of(context).navi;
                     break;
                 case 3:
-                    title = YStrings.project;
+                    title = S.of(context).project;
                     break;
             }
         });
@@ -453,19 +455,19 @@ class _MyHomePageState extends State<MyHomePage> {
                             height: MediaQuery.of(context).size.height * 0.5,
                             child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: YLanguage.languageMap.keys.length,
+                                itemCount: YLanguage.getLanguageMap().keys.length,
                                 itemBuilder: (BuildContext context, int position) {
                                     return GestureDetector(
                                         child: Container(
                                             padding: EdgeInsets.all(20.0),
                                             margin: EdgeInsets.only(bottom: 15),
                                             color: YColors.themeColor[position]["primaryColor"],
-                                            child: Text(YLanguage.languageMap[position]["code"]),
+                                            child: Text(YLanguage.getLanguageMap()[position]["name"]),
                                         ),
                                         onTap: () async {
                                             Provide.value<ThemeProvide>(context).setLanguage(position);
                                             //存储主题下标
-                                            print("------------" + position.toString() + YLanguage.languageMap[position]["code"]);
+                                            print("------------" + position.toString() + YLanguage.getLanguageMap()[position]["code"]);
                                             SharedPreferences sp =
                                             await SharedPreferences.getInstance();
                                             sp.setInt("languageIndex", position);

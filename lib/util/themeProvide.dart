@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plpidb/res/language.dart';
 
 class ThemeProvide with ChangeNotifier {
   int _themeIndex;

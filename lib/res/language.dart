@@ -1,53 +1,184 @@
 import 'package:flutter/material.dart';
 
 class YLanguage {
-  static const Color colorPrimary = Color(0xff4caf50);
-  static const Color colorPrimaryDark = Color(0xff388E3C);
-  static const Color colorAccent = Color(0xff8BC34A);
-  static const Color colorPrimaryLight = Color(0xffC8E6C9);
+  static String language = "";
+  static List languageList = ["en", "zh_CN", "zh", "pt"];
 
-  static const Color primaryText = Color(0xff212121);
-  static const Color secondaryText = Color(0xff757575);
+  static String verifyLanguage(_language){
 
-  static const Color dividerColor = Color(0xffBDBDBD);
+    _language = _language.replaceAll("Hans_", "").replaceAll("Hant_", "");
 
-  static const Color bg = Color(0xffF9F9F9);
-  static const Color color_F9F9F9 = Color(0xffF9F9F9);
+    if(_language[_language.length-1] == "_" ) {
+      print("test " + _language.substring(0, _language.length - 1));
+      _language = _language.substring(0, _language.length - 1);
+    }else {
+      print("test else " + _language);
+      _language = _language;
+    }
 
-  static const Color color_999 = Color(0xff999999);
-  static const Color color_666 = Color(0xff666666);
+    if(!languageList.contains(_language)){
+      print("test contains " + _language);
+      _language = _language.split("_")[0];
+    }
+    return _language;
+  }
 
-  static const Color color_f3f3f3 = Color(0xfff3f3f3);
-  static const Color color_f1f1f1 = Color(0xfff1f1f1);
-  static const Color color_fff = Color(0xffffffff);
+  static setLanguage(device){
+    language = verifyLanguage(device);
+  }
+
 
   /* 语言列表 */
+  static Map getLanguageMap(){
+    print("--------" + language);
+    if(language == "zh_CN")
+      return languageMapCN;
+    if(language.startsWith("zh"))
+      return languageMapMO;
+    if(language.startsWith("pt"))
+      return languageMapPT;
+
+    return languageMap;
+  }
   static const Map languageMap = {
-    0: {
+    0:{
       "code": "en",
       "languageCode": "en",
       "scriptCode": "",
       "countryCode": "",
+      "name": "English",
+      "locale": Locale("en")
     },
-    1:{
-      "code": "zh",
-      "languageCode": "zh",
-      "scriptCode": "",
-      "countryCode": "",
-    },
-    2:
+    1:
     {
       "code": "zh_CN",
       "languageCode": "zh",
       "scriptCode": "",
       "countryCode": "CN",
+      "name": "Simple Chinese",
+      "locale": Locale("zh", "CN")
     },
-    3:{
-      "code": "zh_MO",
+    2:{
+      "code": "zh",
       "languageCode": "zh",
       "scriptCode": "",
-      "countryCode": "MO",
+      "countryCode": "",
+      "name": "Tradicional Chinese",
+      "locale": Locale("zh")
+    },
+    3:{
+      "code": "pt",
+      "languageCode": "pt",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "Portuguese",
+      "locale": Locale("pt")
     }
   };
 
+  static const Map languageMapCN = {
+    0: {
+      "code": "en",
+      "languageCode": "en",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "英文",
+      "locale": Locale("en")
+    },
+    1:
+    {
+      "code": "zh_CN",
+      "languageCode": "zh",
+      "scriptCode": "",
+      "countryCode": "CN",
+      "name": "简体中文",
+      "locale": Locale("zh", "CN")
+    },
+    2:{
+      "code": "zh",
+      "languageCode": "zh",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "繁体中文",
+      "locale": Locale("zh")
+    },
+    3:{
+      "code": "pt",
+      "languageCode": "pt",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "葡文",
+      "locale": Locale("pt")
+    }
+  };
+  static const Map languageMapMO = {
+    0: {
+      "code": "en",
+      "languageCode": "en",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "英文",
+      "locale": Locale("en")
+    },
+    1:
+    {
+      "code": "zh_CN",
+      "languageCode": "zh",
+      "scriptCode": "",
+      "countryCode": "CN",
+      "name": "簡體中文",
+      "locale": Locale("zh", "CN")
+    },
+    2:{
+      "code": "zh",
+      "languageCode": "zh",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "繁體中文",
+      "locale": Locale("zh", "MO")
+    },
+    3:{
+      "code": "pt",
+      "languageCode": "pt",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "葡文",
+      "locale": Locale("pt")
+    }
+  };
+  static const Map languageMapPT = {
+    0: {
+      "code": "en",
+      "languageCode": "en",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "Inglês",
+      "locale": Locale("en")
+    },
+    1:
+    {
+      "code": "zh_CN",
+      "languageCode": "zh",
+      "scriptCode": "",
+      "countryCode": "CN",
+      "name": "Chinês simplificado",
+      "locale": Locale("zh", "CN")
+    },
+    2:{
+      "code": "zh",
+      "languageCode": "zh",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "Chinês tradicional",
+      "locale": Locale("zh")
+    },
+    3:{
+      "code": "pt",
+      "languageCode": "pt",
+      "scriptCode": "",
+      "countryCode": "",
+      "name": "Português",
+      "locale": Locale("pt")
+    }
+  };
 }

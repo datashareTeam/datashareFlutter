@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 class S implements WidgetsLocalizations {
   const S();
 
+  static S current;
+
   static const GeneratedLocalizationsDelegate delegate =
     GeneratedLocalizationsDelegate();
 
@@ -19,13 +21,57 @@ class S implements WidgetsLocalizations {
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
-  String get app_auto => "app_auto";
-  String get app_cn => "cn";
-  String get app_mo => "cn_mo";
-  String get app_en => "en";
-  String get app_information => "information";
-  String get app_name => "";
-  String get app_test => "PLPIDB";
+  String get appName => "PLPIDB";
+  String get github => "http://www.plpidb.com";
+  String get home => "Home";
+  String get navi => "Learn";
+  String get proName => "PLPIDB";
+  String get project => "Team";
+  String get tree => "Data";
+}
+
+class $pt extends S {
+  const $pt();
+
+  @override
+  TextDirection get textDirection => TextDirection.ltr;
+
+  @override
+  String get github => "http://www.plpidb.com";
+  @override
+  String get appName => "PLPIDB";
+  @override
+  String get tree => "Centro de Informações";
+  @override
+  String get project => "Introdução da equipe";
+  @override
+  String get home => "Página inicial";
+  @override
+  String get navi => "Realizações acadêmicas";
+  @override
+  String get proName => "PLPIDB";
+}
+
+class $zh_MO extends S {
+  const $zh_MO();
+
+  @override
+  TextDirection get textDirection => TextDirection.ltr;
+
+  @override
+  String get github => "http://www.plpidb.com";
+  @override
+  String get navi => "學術成果";
+  @override
+  String get appName => "葡語國家投資環境資料庫";
+  @override
+  String get tree => "資料中心";
+  @override
+  String get project => "團隊介紹";
+  @override
+  String get proName => "PLPIDB";
+  @override
+  String get home => "首頁";
 }
 
 class $en extends S {
@@ -39,43 +85,41 @@ class $zh_CN extends S {
   TextDirection get textDirection => TextDirection.ltr;
 
   @override
-  String get app_name => "";
+  String get github => "http://www.plpidb.com";
   @override
-  String get app_en => "英文";
+  String get navi => "学术成果";
   @override
-  String get app_test => "葡语国家投资环境数据库";
+  String get appName => "葡语国家投资环境数据库";
   @override
-  String get app_cn => "简体中文";
+  String get tree => "数据中心";
   @override
-  String get app_mo => "繁体中文";
-
+  String get project => "团队介绍";
   @override
-  String get app_auto => "跟随系统";
+  String get proName => "PLPIDB";
   @override
-  String get app_information => "资讯";
+  String get home => "首页";
 }
 
-class $zh_MO extends S {
-  const $zh_MO();
+class $zh extends S {
+  const $zh();
 
   @override
   TextDirection get textDirection => TextDirection.ltr;
 
   @override
-  String get app_name => "";
+  String get github => "http://www.plpidb.com";
   @override
-  String get app_en => "英文1";
+  String get navi => "學術成果";
   @override
-  String get app_test => "葡語國家投資環境資料庫";
+  String get appName => "葡語國家投資環境資料庫";
   @override
-  String get app_cn => "簡體中文1";
+  String get tree => "資料中心";
   @override
-  String get app_mo => "繁體中文1";
-
+  String get project => "團隊介紹";
   @override
-  String get app_auto => "跟隨系統1";
+  String get proName => "PLPIDB";
   @override
-  String get app_information => "咨詢1";
+  String get home => "首頁";
 }
 
 class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
@@ -83,9 +127,11 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
+      Locale("pt", ""),
+      Locale("zh", "MO"),
       Locale("en", ""),
       Locale("zh", "CN"),
-      Locale("zh", "MO"),
+      Locale("zh", ""),
     ];
   }
 
@@ -110,17 +156,27 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<S> {
     final String lang = getLang(locale);
     if (lang != null) {
       switch (lang) {
-        case "en":
-          return SynchronousFuture<S>(const $en());
-        case "zh_CN":
-          return SynchronousFuture<S>(const $zh_CN());
+        case "pt":
+          S.current = const $pt();
+          return SynchronousFuture<S>(S.current);
         case "zh_MO":
-          return SynchronousFuture<S>(const $zh_MO());
+          S.current = const $zh_MO();
+          return SynchronousFuture<S>(S.current);
+        case "en":
+          S.current = const $en();
+          return SynchronousFuture<S>(S.current);
+        case "zh_CN":
+          S.current = const $zh_CN();
+          return SynchronousFuture<S>(S.current);
+        case "zh":
+          S.current = const $zh();
+          return SynchronousFuture<S>(S.current);
         default:
           // NO-OP.
       }
     }
-    return SynchronousFuture<S>(const S());
+    S.current = const S();
+    return SynchronousFuture<S>(S.current);
   }
 
   @override
